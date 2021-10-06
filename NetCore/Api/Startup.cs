@@ -22,6 +22,7 @@ namespace NetCore
 {
     public class Startup
     {
+        private readonly string _TestCors = "TestCors";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -32,6 +33,16 @@ namespace NetCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: _TestCors,
+                    builder =>
+                    {
+                        builder.WithOrigins("*")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                    });
+            });
 
             services.AddControllers();
 
@@ -68,6 +79,8 @@ namespace NetCore
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(_TestCors);
 
             app.UseAuthorization();
 
